@@ -24,9 +24,35 @@ if Gem.win_platform?
   end
 end
 
-URL = 'https://xml.meteoservice.ru/export/gismeteo/point/33381.xml'.freeze
+CITIES = {
+    33381 => 'Дзержинск',
+    56 => 'Октябрьский',
+    7501 => 'Мурино',
+    99 => 'Новосибирск',
+    59 => 'Пермь',
+    115 => 'Орел',
+    121 => 'Чита',
+    141 => 'Братск',
+    199 => 'Краснодар'
+}.invert.freeze
 
-response = Net::HTTP.get_response(URI.parse(URL))
+city_names = CITIES.keys
+
+puts "Прогноз погоды"
+puts "Погоду для какого города вы хотите узнать:"
+
+city_names.each_with_index { |a, b | puts "#{b + 1}. #{a}" }
+user_input = STDIN.gets.to_i
+unless user_input.between?(1, city_names.size)
+  user_input = STDIN.gets.to_i
+  puts "Выберите номер города."
+end
+
+city_id = CITIES[city_names[user_input - 1]]
+
+url = "https://xml.meteoservice.ru/export/gismeteo/point/#{city_id}.xml"
+
+response = Net::HTTP.get_response(URI.parse(url))
 doc = REXML::Document.new(response.body)
 
 city_name = URI.unescape(doc.root.elements['REPORT/TOWN'].attributes['sname'])
