@@ -30,7 +30,7 @@ class Meteoservice
         time_of_day: TIME_OF_DAY[node.attributes['tod'].to_i],
         temperature_max: node.elements['TEMPERATURE'].attributes['max'].to_i,
         temperature_min: node.elements['TEMPERATURE'].attributes['min'].to_i,
-        cloudiness: node.elements['PHENOMENA'].attributes['cloudiness'].to_i,
+        cloudiness: CLOUDINESS[node.elements['PHENOMENA'].attributes['cloudiness'].to_i],
         max_wind: node.elements['WIND'].attributes['max'].to_i
     )
   end
@@ -39,7 +39,7 @@ class Meteoservice
     result = today? ? 'Сегодня' : @date.strftime('%d.%m.%Y')
 
     result << ", #{@time_of_day}\n" \
-      "#{temperature_range_string}, ветер #{@max_wind} м/с, #{CLOUDINESS[@cloudiness]}"
+      "#{temperature_range_string}, ветер #{@max_wind} м/с, #{@cloudiness}"
 
     result
   end
